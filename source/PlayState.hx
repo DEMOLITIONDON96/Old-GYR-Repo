@@ -2683,6 +2683,16 @@ class PlayState extends MusicBeatState
 						targetsArray[i].shake(intensity, duration);
 					}
 				}
+				case 'Flip Notes':
+					swapNotesOnStrum(0, 3);
+					swapNotesOnStrum(1, 2);
+
+				case 'Swap Notes':
+					var val1:Int = Std.parseInt(value1);
+					var val2:Int = Std.parseInt(value2);
+					if(Math.isNaN(val1)) val1 = 0;
+					if(Math.isNaN(val2)) val2 = 3;
+					swapNotesOnStrum(val1, val2);
 
 			case 'Change Character':
 				var charType:Int = Std.parseInt(value1);
