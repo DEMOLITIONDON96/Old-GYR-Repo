@@ -2822,15 +2822,6 @@ class PlayState extends MusicBeatState
 	}
 
 
-
- 		if (SONG.notes[Std.int(curStep / 16)].gfSection){
-
- 			camFollow.set(gf.getMidpoint().x, gf.getMidpoint().y);
- 			camFollow.x += gf.cameraPosition[0];
- 			camFollow.y += gf.cameraPosition[1];
- 			tweenCamIn();
- 		}
-	}
 			
 	function tweenCamIn() {
 		if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1.3) {
