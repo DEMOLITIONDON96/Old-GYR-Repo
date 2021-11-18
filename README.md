@@ -1,4 +1,4 @@
-# Friday Night Funkin': Vs Fear (Demo)
+# Friday Night Funkin': Vs Fear (Test Build)
 
 ## Installation:
 Follow a Friday Night Funkin' source code compilation tutorial, after this you will need to install LuaJIT.
