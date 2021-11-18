@@ -1,4 +1,4 @@
-# Friday Night Funkin': Vs Fear (Test Build)
+# Friday Night Funkin': Vs Fear (Demo)
 
 ## Installation:
 Follow a Friday Night Funkin' source code compilation tutorial, after this you will need to install LuaJIT.
@@ -21,7 +21,8 @@ You can do this with: `haxelib install linc_luajit` on a Command prompt/PowerShe
 
 #### Contents in this Mod Build:
 * 2 New Difficulties
-* 8 New Charts for 4 of the Vanilla Game Tracks
+* 3 Original Tracks (one's a joke)
+*  12 New Charts for 6 of the Vanilla Game Tracks
 * New Menu BG
 * Funny Secrets
 * Custom Gimmicks
