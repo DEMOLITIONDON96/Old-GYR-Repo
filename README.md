@@ -19,11 +19,9 @@ You can do this with: `haxelib install linc_luajit` on a Command prompt/PowerShe
 * Luis - Kept me motivated
 * Icy - Made me get better at my gamer skills for FNF lmfao
 
-#### Contents in this Mod:
+#### Contents in this Mod Build:
 * 2 New Difficulties
-* 2 Original Songs
-* 12 New Charts for 6 of the Vanilla Game Tracks
-* Custom BF Sprite
+* 8 New Charts for 6 of the Vanilla Game Tracks
 * New Menu BG
 * Funny Secrets
 * Custom Gimmicks
