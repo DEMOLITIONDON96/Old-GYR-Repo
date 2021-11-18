@@ -21,7 +21,7 @@ You can do this with: `haxelib install linc_luajit` on a Command prompt/PowerShe
 
 #### Contents in this Mod Build:
 * 2 New Difficulties
-* 8 New Charts for 6 of the Vanilla Game Tracks
+* 8 New Charts for 4 of the Vanilla Game Tracks
 * New Menu BG
 * Funny Secrets
 * Custom Gimmicks
