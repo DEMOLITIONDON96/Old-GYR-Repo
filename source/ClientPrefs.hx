@@ -21,57 +21,46 @@ class ClientPrefs {
 	public static var camZooms:Bool = true;
 	public static var hideHud:Bool = false;
 	public static var noteOffset:Int = 0;
-	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
 	public static var imagesPersist:Bool = false;
 	public static var ghostTapping:Bool = true;
 	public static var hideTime:Bool = false;
 
-	//Every key has two binds, these binds are defined on defaultKeys! If you want your control to be changeable, you have to add it on ControlsSubState (inside OptionsState.hx)'s list
-	public static var keyBinds:Map<Control, Dynamic> = new Map<Control, Dynamic>();
-	public static var defaultKeys:Map<Control, Dynamic>;
-	
-	public static function startControls() {
+	public static var defaultKeys:Array<FlxKey> = [
+		A, LEFT,			//Note Left
+		S, DOWN,			//Note Down
+		W, UP,				//Note Up
+		D, RIGHT,			//Note Right
+
+		A, LEFT,			//UI Left
+		S, DOWN,			//UI Down
+		W, UP,				//UI Up
+		D, RIGHT,			//UI Right
+
+		R, NONE,			//Reset
+		SPACE, ENTER,		//Accept
+		BACKSPACE, ESCAPE,	//Back
+		ENTER, ESCAPE		//Pause
+	];
+	//Every key has two binds, these binds are defined on defaultKeys! If you want your control to be changeable, you have to add it on ControlsSubState (inside OptionsState)'s list
+	public static var keyBinds:Array<Dynamic> = [
 		//Key Bind, Name for ControlsSubState
-		keyBinds.set(Control.NOTE_LEFT, [A, LEFT]);
-		keyBinds.set(Control.NOTE_DOWN, [S, DOWN]);
-		keyBinds.set(Control.NOTE_CENTER_5k, [SPACE, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_UP, [W, UP]);
-		keyBinds.set(Control.NOTE_RIGHT, [D, RIGHT]);
-		
-		// 6k 7k
-		keyBinds.set(Control.NOTE_1_6k, [S, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_2_6k, [D, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_3_6k, [F, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_CENTER_7k, [SPACE, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_4_6k, [H, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_5_6k, [J, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_6_6k, [K, FlxKey.NONE]);
-		
-		// 8k 9k
-		keyBinds.set(Control.NOTE_1_8k, [A, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_2_8k, [S, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_3_8k, [D, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_4_8k, [F, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_CENTER_9k, [SPACE, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_5_8k, [H, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_6_8k, [J, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_7_8k, [K, FlxKey.NONE]);
-		keyBinds.set(Control.NOTE_8_8k, [L, FlxKey.NONE]);
-		
-		keyBinds.set(Control.UI_LEFT, [A, LEFT]);
-		keyBinds.set(Control.UI_DOWN, [S, DOWN]);
-		keyBinds.set(Control.UI_UP, [W, UP]);
-		keyBinds.set(Control.UI_RIGHT, [D, RIGHT]);
-		
-		keyBinds.set(Control.ACCEPT, [SPACE, ENTER]);
-		keyBinds.set(Control.BACK, [BACKSPACE, ESCAPE]);
-		keyBinds.set(Control.PAUSE, [ENTER, ESCAPE]);
-		keyBinds.set(Control.RESET, [R, FlxKey.NONE]);
-		
-		
-		// Don't delete this
-		defaultKeys = keyBinds.copy();
-	}
+		[Control.NOTE_LEFT, 'Left'],
+		[Control.NOTE_DOWN, 'Down'],
+		[Control.NOTE_UP, 'Up'],
+		[Control.NOTE_RIGHT, 'Right'],
+
+		[Control.UI_LEFT, 'Left '],		//Added a space for not conflicting on ControlsSubState
+		[Control.UI_DOWN, 'Down '],		//Added a space for not conflicting on ControlsSubState
+		[Control.UI_UP, 'Up '],			//Added a space for not conflicting on ControlsSubState
+		[Control.UI_RIGHT, 'Right '],	//Added a space for not conflicting on ControlsSubState
+
+		[Control.RESET, 'Reset'],
+		[Control.ACCEPT, 'Accept'],
+		[Control.BACK, 'Back'],
+		[Control.PAUSE, 'Pause']
+	];
+	public static var lastControls:Array<FlxKey> = defaultKeys.copy();
 
 	public static function saveSettings() {
 		FlxG.save.data.downScroll = downScroll;
@@ -159,7 +148,7 @@ class ClientPrefs {
 		if(FlxG.save.data.noteOffset != null) {
 			noteOffset = FlxG.save.data.noteOffset;
 		}
-		if(FlxG.save.data.arrowHSV != null && FlxG.save.data.arrowHSV.length == arrowHSV.length) {
+		if(FlxG.save.data.arrowHSV != null) {
 			arrowHSV = FlxG.save.data.arrowHSV;
 		}
 		if(FlxG.save.data.imagesPersist != null) {

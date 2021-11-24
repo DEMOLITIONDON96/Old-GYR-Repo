@@ -49,7 +49,6 @@ import Achievements;
 import StageData;
 import FunkinLua;
 import DialogueBoxPsych;
-import Note;
 
 #if sys
 import sys.FileSystem;
@@ -805,7 +804,7 @@ class PlayState extends MusicBeatState
 		add(strumLineNotes);
 		add(grpNoteSplashes);
 
-		var splash:NoteSplash = new NoteSplash(ClientPrefs.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, strumLine.y, 0);
+		var splash:NoteSplash = new NoteSplash(100, 100, 0);
 		grpNoteSplashes.add(splash);
 		splash.alpha = 0.0;
 
@@ -1509,7 +1508,7 @@ class PlayState extends MusicBeatState
 				for (songNotes in section.sectionNotes)
 				{
 					if(songNotes[1] < 0) {
-						eventNotes.push(songNotes);
+						eventNotes.push([songNotes[0], songNotes[1], songNotes[2], songNotes[3], songNotes[4]]);
 						eventPushed(songNotes);
 					}
 				}
@@ -1522,11 +1521,11 @@ class PlayState extends MusicBeatState
 			{
 				if(songNotes[1] > -1) { //Real notes
 					var daStrumTime:Float = songNotes[0];
-					var daNoteData:Int = Std.int(songNotes[1] % SONG.songKeys);
+					var daNoteData:Int = Std.int(songNotes[1] % 4);
 
 					var gottaHitNote:Bool = section.mustHitSection;
 
-					if (songNotes[1] > SONG.songKeys - 1)
+					if (songNotes[1] > 3)
 					{
 						gottaHitNote = !section.mustHitSection;
 					}
@@ -1588,7 +1587,7 @@ class PlayState extends MusicBeatState
 						noteTypeMap.set(swagNote.noteType, true);
 					}
 				} else { //Event Notes
-					eventNotes.push(songNotes);
+					eventNotes.push([songNotes[0], songNotes[1], songNotes[2], songNotes[3], songNotes[4]]);
 					eventPushed(songNotes);
 				}
 			}
@@ -1656,7 +1655,7 @@ class PlayState extends MusicBeatState
 
 	private function generateStaticArrows(player:Int):Void
 	{
-		for (i in 0...SONG.songKeys)
+		for (i in 0...4)
 		{
 			// FlxG.log.add(i);
 			var babyArrow:StrumNote = new StrumNote(ClientPrefs.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, strumLine.y, i, player);
@@ -1664,7 +1663,7 @@ class PlayState extends MusicBeatState
 			{
 				babyArrow.y -= 10;
 				babyArrow.alpha = 0;
-				FlxTween.tween(babyArrow, {y: babyArrow.y + 10, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * NoteGraphic.convertForKeys(i))});
+				FlxTween.tween(babyArrow, {y: babyArrow.y + 10, alpha: 1}, 1, {ease: FlxEase.circOut, startDelay: 0.5 + (0.2 * i)});
 			}
 
 			if (player == 1)
@@ -2255,7 +2254,18 @@ class PlayState extends MusicBeatState
 							}
 						}
 
-						var animToPlay:String = 'sing' + NoteGraphic.getDirection(daNote.noteData);
+						var animToPlay:String = '';
+						switch (Math.abs(daNote.noteData))
+						{
+							case 0:
+								animToPlay = 'singLEFT';
+							case 1:
+								animToPlay = 'singDOWN';
+							case 2:
+								animToPlay = 'singUP';
+							case 3:
+								animToPlay = 'singRIGHT';
+						}
 						if(daNote.noteType == 'GF Sing') {
 							gf.playAnim(animToPlay + altAnim, true);
 							gf.holdTimer = 0;
@@ -2272,7 +2282,7 @@ class PlayState extends MusicBeatState
 					if(daNote.isSustainNote && !daNote.animation.curAnim.name.endsWith('end')) {
 						time += 0.15;
 					}
-					StrumPlayAnim(true, Std.int(Math.abs(daNote.noteData)) % SONG.songKeys, time);
+					StrumPlayAnim(true, Std.int(Math.abs(daNote.noteData)) % 4, time);
 					daNote.hitByOpponent = true;
 
 					callOnLuas('opponentNoteHit', [notes.members.indexOf(daNote), Math.abs(daNote.noteData), daNote.noteType, daNote.isSustainNote]);
@@ -3210,39 +3220,27 @@ class PlayState extends MusicBeatState
 		});
 	}
 
-	 private function keyShit():Void {
+	private function keyShit():Void
+	{
+		// HOLDING
+		var up = controls.NOTE_UP;
+		var right = controls.NOTE_RIGHT;
+		var down = controls.NOTE_DOWN;
+		var left = controls.NOTE_LEFT;
 
-        var controlArray:Array<Bool>;
-        var controlReleaseArray:Array<Bool>;
-        var controlHoldArray:Array<Bool>;
+		var upP = controls.NOTE_UP_P;
+		var rightP = controls.NOTE_RIGHT_P;
+		var downP = controls.NOTE_DOWN_P;
+		var leftP = controls.NOTE_LEFT_P;
 
-        switch(SONG.songKeys) {
-            case 4:
-                controlArray = [controls.NOTE_LEFT_P, controls.NOTE_DOWN_P, controls.NOTE_UP_P, controls.NOTE_RIGHT_P];
-                controlReleaseArray = [controls.NOTE_LEFT_R, controls.NOTE_DOWN_R, controls.NOTE_UP_R, controls.NOTE_RIGHT_R];
-                controlHoldArray = [controls.NOTE_LEFT, controls.NOTE_DOWN, controls.NOTE_UP, controls.NOTE_RIGHT];
-            case 5:
-                controlArray = [controls.NOTE_LEFT_P, controls.NOTE_DOWN_P, controls.NOTE_CENTER_5k_P, controls.NOTE_UP_P, controls.NOTE_RIGHT_P];
-                controlReleaseArray = [controls.NOTE_LEFT_R, controls.NOTE_DOWN_R, controls.NOTE_CENTER_5k_R, controls.NOTE_UP_R, controls.NOTE_RIGHT_R];
-                controlHoldArray = [controls.NOTE_LEFT, controls.NOTE_DOWN, controls.NOTE_CENTER_5k, controls.NOTE_UP, controls.NOTE_RIGHT];
-            case 6:
-                controlArray = [controls.NOTE_1_6k_P, controls.NOTE_2_6k_P, controls.NOTE_3_6k_P, controls.NOTE_4_6k_P, controls.NOTE_5_6k_P, controls.NOTE_6_6k_P];
-                controlReleaseArray = [controls.NOTE_1_6k_R, controls.NOTE_2_6k_R, controls.NOTE_3_6k_R, controls.NOTE_4_6k_R, controls.NOTE_5_6k_R, controls.NOTE_6_6k_R];
-                controlHoldArray = [controls.NOTE_1_6k, controls.NOTE_2_6k, controls.NOTE_3_6k, controls.NOTE_4_6k, controls.NOTE_5_6k, controls.NOTE_6_6k];
-            case 7:
-                controlArray = [controls.NOTE_1_6k_P, controls.NOTE_2_6k_P, controls.NOTE_3_6k_P, controls.NOTE_CENTER_7k_P, controls.NOTE_4_6k_P, controls.NOTE_5_6k_P, controls.NOTE_6_6k_P];
-                controlReleaseArray = [controls.NOTE_1_6k_R, controls.NOTE_2_6k_R, controls.NOTE_3_6k_R, controls.NOTE_CENTER_7k_R, controls.NOTE_4_6k_R, controls.NOTE_5_6k_R, controls.NOTE_6_6k_R];
-                controlHoldArray = [controls.NOTE_1_6k, controls.NOTE_2_6k, controls.NOTE_3_6k, controls.NOTE_CENTER_7k, controls.NOTE_4_6k, controls.NOTE_5_6k, controls.NOTE_6_6k];
-            case 8:
-                controlArray = [controls.NOTE_1_8k_P, controls.NOTE_2_8k_P, controls.NOTE_3_8k_P, controls.NOTE_4_8k_P, controls.NOTE_5_8k_P, controls.NOTE_6_8k_P, controls.NOTE_7_8k_P, controls.NOTE_8_8k_P];
-                controlReleaseArray = [controls.NOTE_1_8k_R, controls.NOTE_2_8k_R, controls.NOTE_3_8k_R, controls.NOTE_4_8k_R, controls.NOTE_5_8k_R, controls.NOTE_6_8k_R, controls.NOTE_7_8k_R, controls.NOTE_8_8k_R];
-                controlHoldArray = [controls.NOTE_1_8k, controls.NOTE_2_8k, controls.NOTE_3_8k, controls.NOTE_4_8k, controls.NOTE_5_8k, controls.NOTE_6_8k, controls.NOTE_7_8k, controls.NOTE_8_8k];
-            case 9:
-                controlArray = [controls.NOTE_1_8k_P, controls.NOTE_2_8k_P, controls.NOTE_3_8k_P, controls.NOTE_4_8k_P, controls.NOTE_CENTER_9k_P, controls.NOTE_5_8k_P, controls.NOTE_6_8k_P, controls.NOTE_7_8k_P, controls.NOTE_8_8k_P];
-                controlReleaseArray = [controls.NOTE_1_8k_R, controls.NOTE_2_8k_R, controls.NOTE_3_8k_R, controls.NOTE_4_8k_R, controls.NOTE_CENTER_9k_R, controls.NOTE_5_8k_R, controls.NOTE_6_8k_R, controls.NOTE_7_8k_R, controls.NOTE_8_8k_R];
-                controlHoldArray = [controls.NOTE_1_8k, controls.NOTE_2_8k, controls.NOTE_3_8k, controls.NOTE_4_8k, controls.NOTE_CENTER_9k, controls.NOTE_5_8k, controls.NOTE_6_8k, controls.NOTE_7_8k, controls.NOTE_8_8k];
-            default: return;
-        }
+		var upR = controls.NOTE_UP_R;
+		var rightR = controls.NOTE_RIGHT_R;
+		var downR = controls.NOTE_DOWN_R;
+		var leftR = controls.NOTE_LEFT_R;
+
+		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
+		var controlReleaseArray:Array<Bool> = [leftR, downR, upR, rightR];
+		var controlHoldArray:Array<Bool> = [left, down, up, right];
 
 		// FlxG.watch.addQuick('asdfa', upP);
 		if (!boyfriend.stunned && generatedMusic)
@@ -3363,7 +3361,19 @@ class PlayState extends MusicBeatState
 		vocals.volume = 0;
 		RecalculateRating();
 
-		var animToPlay:String = 'sing' + NoteGraphic.getDirection(daNote.noteData) + 'miss';
+		var animToPlay:String = '';
+		switch (Math.abs(daNote.noteData) % 4)
+		{
+			case 0:
+				animToPlay = 'singLEFTmiss';
+			case 1:
+				animToPlay = 'singDOWNmiss';
+			case 2:
+				animToPlay = 'singUPmiss';
+			case 3:
+				animToPlay = 'singRIGHTmiss';
+		}
+
 		if(daNote.noteType == 'GF Sing') {
 			gf.playAnim(animToPlay, true);
 		} else {
@@ -3405,7 +3415,17 @@ class PlayState extends MusicBeatState
 				boyfriend.stunned = false;
 			});*/
 
-			boyfriend.playAnim('sing' + NoteGraphic.getDirection(direction) + 'miss');
+			switch (direction)
+			{
+				case 0:
+					boyfriend.playAnim('singLEFTmiss', true);
+				case 1:
+					boyfriend.playAnim('singDOWNmiss', true);
+				case 2:
+					boyfriend.playAnim('singUPmiss', true);
+				case 3:
+					boyfriend.playAnim('singRIGHTmiss', true);
+			}
 			vocals.volume = 0;
 		}
 	}
@@ -3432,7 +3452,7 @@ class PlayState extends MusicBeatState
 							boyfriend.playAnim('hurt', true);
 							boyfriend.specialAnim = true;
 							{
-			health -= 0.010;
+			health -= 0.025;
 		}
 
 						}
@@ -3460,7 +3480,19 @@ class PlayState extends MusicBeatState
 				var daAlt = '';
 				if(note.noteType == 'Alt Animation') daAlt = '-alt';
 	
-				var animToPlay:String = 'sing' + NoteGraphic.getDirection(note.noteData);
+				var animToPlay:String = '';
+				switch (Std.int(Math.abs(note.noteData)))
+				{
+					case 0:
+						animToPlay = 'singLEFT';
+					case 1:
+						animToPlay = 'singDOWN';
+					case 2:
+						animToPlay = 'singUP';
+					case 3:
+						animToPlay = 'singRIGHT';
+				}
+
 				if(note.noteType == 'GF Sing') {
 					gf.playAnim(animToPlay + daAlt, true);
 					gf.holdTimer = 0;
@@ -3489,7 +3521,7 @@ class PlayState extends MusicBeatState
 				if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
 					time += 0.15;
 				}
-				StrumPlayAnim(false, Std.int(Math.abs(note.noteData)) % SONG.songKeys, time);
+				StrumPlayAnim(false, Std.int(Math.abs(note.noteData)) % 4, time);
 			} else {
 				playerStrums.forEach(function(spr:StrumNote)
 				{
@@ -3529,9 +3561,9 @@ class PlayState extends MusicBeatState
 		var skin:String = 'noteSplashes';
 		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
 		
-		var hue:Float = ClientPrefs.arrowHSV[NoteGraphic.convertForKeys(data) % PlayState.SONG.songKeys][0] / 360;
-		var sat:Float = ClientPrefs.arrowHSV[NoteGraphic.convertForKeys(data) % PlayState.SONG.songKeys][1] / 100;
-		var brt:Float = ClientPrefs.arrowHSV[NoteGraphic.convertForKeys(data) % PlayState.SONG.songKeys][2] / 100;
+		var hue:Float = ClientPrefs.arrowHSV[data % 4][0] / 360;
+		var sat:Float = ClientPrefs.arrowHSV[data % 4][1] / 100;
+		var brt:Float = ClientPrefs.arrowHSV[data % 4][2] / 100;
 		if(note != null) {
 			skin = note.noteSplashTexture;
 			hue = note.noteSplashHue;

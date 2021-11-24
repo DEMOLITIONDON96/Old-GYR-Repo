@@ -1,10 +1,8 @@
 package;
 
-import Note.NoteGraphic;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
-import Note;
 
 class NoteSplash extends FlxSprite
 {
@@ -29,16 +27,11 @@ class NoteSplash extends FlxSprite
 
 	public function setupNoteSplash(x:Float, y:Float, note:Int = 0, texture:String = null, hueColor:Float = 0, satColor:Float = 0, brtColor:Float = 0) {
 		setPosition(x - Note.swagWidth * 0.95, y - Note.swagWidth);
-		setGraphicSize(Std.int(width * NoteGraphic.getScale()));
 		alpha = 0.6;
 
 		if(texture == null) {
 			texture = 'noteSplashes';
 			if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) texture = PlayState.SONG.splashSkin;
-			
- 			if (PlayState.isPixelStage) {
- 			     texture = 'noteSplashes-pixel';
- 			}   
 		}
 
 		if(textureLoaded != texture) {
@@ -47,22 +40,20 @@ class NoteSplash extends FlxSprite
 		colorSwap.hue = hueColor;
 		colorSwap.saturation = satColor;
 		colorSwap.brightness = brtColor;
-		offset.set(NoteGraphic.getOffset() / 2, NoteGraphic.getOffset() / 2);
+		offset.set(10, 10);
 
 		var animNum:Int = FlxG.random.int(1, 2);
-		animation.play('note' + NoteGraphic.convertForKeys(note) + '-' + animNum, true);
+		animation.play('note' + note + '-' + animNum, true);
 		animation.curAnim.frameRate = 24 + FlxG.random.int(-2, 2);
 	}
 
 	function loadAnims(skin:String) {
 		frames = Paths.getSparrowAtlas(skin);
-		var color:String = "";
-		for (e in Type.allEnums(Color)) {
-			var j:Int = NoteGraphic.ColorToInt(e);
-			color = NoteGraphic.fromColor(e);
-			for (i in 1...3) {
-				animation.addByPrefix("note" + j + "-" + i, "note splash " + color + " " + i, 24, false);
-			}
+		for (i in 1...3) {
+			animation.addByPrefix("note1-" + i, "note splash blue " + i, 24, false);
+			animation.addByPrefix("note2-" + i, "note splash green " + i, 24, false);
+			animation.addByPrefix("note0-" + i, "note splash purple " + i, 24, false);
+			animation.addByPrefix("note3-" + i, "note splash red " + i, 24, false);
 		}
 	}
 
