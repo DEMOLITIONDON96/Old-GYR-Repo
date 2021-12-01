@@ -3,6 +3,7 @@ package;
 #if desktop
 import Discord.DiscordClient;
 #end
+import editors.ChartingState;
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -17,6 +18,7 @@ import lime.utils.Assets;
 import flixel.system.FlxSound;
 import openfl.utils.Assets as OpenFlAssets;
 import WeekData;
+import sys.FileSystem;
 
 using StringTools;
 
@@ -200,6 +202,8 @@ class FreeplayState extends MusicBeatState
 	private static var vocals:FlxSound = null;
 	override function update(elapsed:Float)
 	{
+		
+		
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -291,7 +295,12 @@ class FreeplayState extends MusicBeatState
 			if(colorTween != null) {
 				colorTween.cancel();
 			}
+				
+			if (FlxG.keys.pressed.SHIFT){
+ 				FlxG.switchState(new ChartingState());
+ 			}else{
 			LoadingState.loadAndSwitchState(new PlayState());
+			}
 
 			FlxG.sound.music.volume = 0;
 					
@@ -334,6 +343,19 @@ class FreeplayState extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
+				CoolUtil.difficultyStuff = [//reset difficulties
+ 			['Easy', '-easy'],
+ 			['Normal', ''],
+ 			['Hard', '-hard'],
+			['Mania', '-mania'],
+			['Hell', '-hell']
+ 		];
+
+		
+
+ 		if (curDifficulty > CoolUtil.difficultyStuff.length-1) curDifficulty = CoolUtil.difficultyStuff.length-1;
+		
+		
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
 		curSelected += change;
@@ -388,6 +410,40 @@ class FreeplayState extends MusicBeatState
 		}
 		changeDiff();
 		Paths.currentModDirectory = songs[curSelected].folder;
+				//it didn't account for mod directories my bad : P
+
+
+ 		//MAKE THIS COOLER : PPP
+ 			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
+ 			#if MODS_ALLOWED
+ 			var pathshit = Paths.modFolders('data/' + songLowercase);
+ 			//if(!sys.FileSystem.exists(Paths.modsJson(songLowercase + '/' + poop)) && !sys.FileSystem.exists(Paths.json(songLowercase + '/' + poop))) {
+
+ 			if (FileSystem.exists(Paths.json(songLowercase + '/' + songLowercase))){
+
+ 				pathshit = Paths.getPreloadPath('data/' + songLowercase);
+ 			}
+ 				for (i in FileSystem.readDirectory(pathshit)){
+ 			#else
+ 				for (i in FileSystem.readDirectory(Paths.json(songLowercase + '/' + songLowercase))){
+ 			#end
+ 					var name:String = i;
+ 					var dif = StringTools.replace(name, songLowercase, '').split('.')[0];
+ 					var difName = StringTools.replace(dif, '-', '');
+
+ 					if (name.split('.')[1] == 'json' && name != 'events.json'){//check if it's an actual song chart
+
+ 						if (dif != '-easy' && dif != '' && dif != '-hard' && dif != '-mania' && dif != '-hell'){//now check if it's a custom difficulty
+ 							CoolUtil.difficultyStuff.push([difName,dif]);
+ 						}
+
+ 					}
+ 				}
+
+
+ 			trace(	CoolUtil.difficultyStuff);
+
+				
 	}
 
 	private function positionHighscore() {
