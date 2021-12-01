@@ -24,8 +24,8 @@ using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
-	public static var vsfearVersion:String = '0.2.4';
-	public static var psychEngineVersion:String = '0.4.2'; //This is also used for Discord RPC
+	public static var vsfearVersion:String = '0.3.1';
+	public static var psychEngineVersion:String = '0.4.5'; //This is also used for Discord RPC
 	public static var curSelected:Int = 0;
 
 	var menuItems:FlxTypedGroup<FlxSprite>;
@@ -266,10 +266,12 @@ class MainMenuState extends MusicBeatState
 			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');
-				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y);
-				spr.offset.x = 0.15 * (spr.frameWidth / 2 + 180);
-				spr.offset.y = 0.15 * spr.frameHeight;
-				FlxG.log.add(spr.frameWidth);
+				var add:Float = 0;
+ 				if(menuItems.length > 4) {
+ 					add = menuItems.length * 8;
+ 				}
+ 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y - add);
+ 				spr.centerOffsets();
 			}
 		});
 	}
