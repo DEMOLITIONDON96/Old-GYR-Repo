@@ -3435,8 +3435,7 @@ class PlayState extends MusicBeatState
 			health -= 500;
 		}
 
-	//	health -= daNote.missHealth; 
- 		health -= daNote.missHealth+(songMisses/2000); //For get-gud incentive
+		health -= daNote.missHealth;
  		//For testing purposes
 		trace(daNote.missHealth);
 		songMisses++;
