@@ -345,19 +345,6 @@ class FreeplayState extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
-				CoolUtil.difficultyStuff = [//reset difficulties
- 			['Easy', '-easy'],
- 			['Normal', ''],
- 			['Hard', '-hard'],
-			['Mania', '-mania'],
-			['Hell', '-hell']
- 		];
-
-		
-
- 		if (curDifficulty > CoolUtil.difficultyStuff.length-1) curDifficulty = CoolUtil.difficultyStuff.length-1;
-		
-		
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
 		curSelected += change;
