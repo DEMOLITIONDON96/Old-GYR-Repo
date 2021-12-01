@@ -1465,7 +1465,7 @@ class ChartingState extends MusicBeatState
 
  					for (i in datimess){
  						if(!foundaspot){
- 							if (FlxG.sound.music.time < i){
+ 							if (FlxG.sound.music.time <= i){// or < i that might work
  								foundaspot = true;
  							}else{
  								tosnapto = i;
@@ -2174,7 +2174,7 @@ class ChartingState extends MusicBeatState
  		{
  			curRenderedNotes.forEachAlive(function(note:Note)
  			{
- 				if (strumLineNotes.members[d].overlaps(note) && note.noteData == d%4)
+ 				if (strumLine.overlaps(note) && note.noteData == d%4)
  				{
  						trace('tryin to delete note...');
  						if(!delnote)deleteNote(note);
