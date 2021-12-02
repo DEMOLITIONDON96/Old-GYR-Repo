@@ -31,3 +31,5 @@ You can do this with: `haxelib install linc_luajit` on a Command prompt/PowerShe
 You can do anything with the assets as long as you credit us for the shit!
 
 `Fun Fact:` Mr. Fear is immune to the corruption, so good luck trying to make it canon :)
+
+######YO NAS, TEST THIS NEW CODE PLS LOL
