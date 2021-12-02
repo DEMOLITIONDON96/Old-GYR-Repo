@@ -398,7 +398,7 @@ class FreeplayState extends MusicBeatState
 			}
 		}
 		
-		CoolUtil.difficultyStuff: = [
+		CoolUtil.difficultyStuff = [
  			['Easy', '-easy'],
  			['Normal', ''],
  			['Hard', '-hard'],
