@@ -9,7 +9,7 @@ You can do this with: `haxelib install linc_luajit` on a Command prompt/PowerShe
 
 ## Credits:
 * DEMOLITIONDON96 - Director, Main Artist, Charter & Main Coder
-* swiss - Charted Spookeez for the new difficulties & some fixes to the code
+* swiss - Charted Spookeez for the new difficulties & helps test the code
 * TrevorAnimates - Main Animator
 * Bopaku - Charted "Philly Nice" for the new difficulties
 * Zady - Tester
@@ -21,9 +21,7 @@ You can do this with: `haxelib install linc_luajit` on a Command prompt/PowerShe
 
 #### Contents in this Mod Build:
 * 2 New Difficulties
-* 12 New Charts for 6 of the Vanilla Game Tracks
-* 3 Original Tracks (one's a joke)
-* Some New Sprites
+* 6 New Charts for 3 of the Vanilla Game Tracks
 * New Menu BG
 * Unique Note Skin for EVERY Character
 * Funny Secrets
